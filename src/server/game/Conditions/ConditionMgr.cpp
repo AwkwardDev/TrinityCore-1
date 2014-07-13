@@ -28,6 +28,7 @@
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "Spell.h"
+#include "DisableMgr.h"
 
 // Checks if object meets the condition
 // Can have CONDITION_SOURCE_TYPE_NONE && !mReferenceId if called from a special event (ie: eventAI)
@@ -129,7 +130,8 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
             if (Player* player = object->ToPlayer())
             {
                 QuestStatus status = player->GetQuestStatus(ConditionValue1);
-                condMeets = (status == QUEST_STATUS_INCOMPLETE);
+                // LASYAN3 : allows loot of quest items even if the player does not have the quest yet
+                condMeets = (SourceType == CONDITION_SOURCE_TYPE_CREATURE_LOOT_TEMPLATE && player->CanDropQuestItem(SourceEntry)) ? true : (status == QUEST_STATUS_INCOMPLETE);
             }
             break;
         }
