@@ -1252,11 +1252,11 @@ class spell_pal_sacred_shield : public SpellScriptLoader
                     amount += int32(bonus);
 
                     // Arena - Dampening
-                    if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_ARENA_DAMPENING, EFFECT_0))
-                        AddPct(amount, dampening->GetAmount());
+                    if (AuraEffect const* auraEffArenaDampening = caster->GetAuraEffect(SPELL_GENERIC_ARENA_DAMPENING, EFFECT_0))
+                        AddPct(amount, auraEffArenaDampening->GetAmount());
                     // Battleground - Dampening
-                    else if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_BATTLEGROUND_DAMPENING, EFFECT_0))
-                        AddPct(amount, dampening->GetAmount());
+                    else if (AuraEffect const* auraEffBattlegroudDampening = caster->GetAuraEffect(SPELL_GENERIC_BATTLEGROUND_DAMPENING, EFFECT_0))
+                        AddPct(amount, auraEffBattlegroudDampening->GetAmount());
                 }
             }
 
@@ -1291,7 +1291,7 @@ class spell_pal_seal_of_righteousness : public SpellScriptLoader
 
             bool CheckProc(ProcEventInfo& eventInfo)
             {
-                return eventInfo.GetProcTarget();
+                return eventInfo.GetProcTarget() != nullptr;
             }
 
             void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
