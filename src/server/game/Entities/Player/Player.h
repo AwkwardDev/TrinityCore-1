@@ -1484,8 +1484,8 @@ class Player : public Unit, public GridObject<Player>
         bool HasPvPForcingQuest() const;
 
         // LASYAN3: AlwaysDropQuestItems
-        bool CanDropQuestItem(uint32 itemid); 
-        ObjectMgr::QuestMap GetAvailableQuestsForItem(uint32 itemid);
+		bool CanDropQuestItem(uint32 itemid) const;
+        ObjectMgr::QuestMap GetAvailableQuestsForItem(uint32 itemid) const;
 
         /*********************************************************/
         /***                   LOAD SYSTEM                     ***/
@@ -2341,9 +2341,6 @@ class Player : public Unit, public GridObject<Player>
 
         std::string GetMapAreaAndZoneString();
         std::string GetCoordsMapAreaAndZoneString();
-
-        std::string MsgQuestItemAdded;
-        int32 IdQuestItemAdded;
 
     protected:
         // Gamemaster whisper whitelist

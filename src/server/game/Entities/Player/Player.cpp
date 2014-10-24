@@ -17014,7 +17014,7 @@ bool Player::HasPvPForcingQuest() const
     return false;
 }
 
-bool Player::CanDropQuestItem(uint32 itemid) // LASYAN: return true if at least one quest can be done by the player
+bool Player::CanDropQuestItem(uint32 itemid) const // LASYAN: return true if at least one quest can be done by the player
 {
     if (!sWorld->getBoolConfig(CONFIG_DROP_QUEST_ITEMS)) return false;
 
@@ -17058,17 +17058,17 @@ bool Player::CanDropQuestItem(uint32 itemid) // LASYAN: return true if at least 
                     qInfo = qTemp;
                 }
 
-                IdQuestItemAdded = itemid;
+                /*IdQuestItemAdded = itemid;
                 ItemTemplate const * it = sObjectMgr->GetItemTemplate(itemid);
                 std::ostringstream msg;
-                msg << it->Name1 << " (" << (GetItemCount(itemid, false) + 1) << "/" << itemCountNeeded << ") ";
+                msg << it->Name1 << " (" << (GetItemCount(itemid, false) + 1) << "/" << itemCountNeeded << ") ";*/
                 /*if (giver_name.size() > 0)
                 {
                 msg << "\r\n" << giver_name;
                 if (area_name.size() > 0) msg << " " << area_name;
                 if (zone_name.size() > 0) msg << " (" << zone_name << ")";
                 }*/
-                MsgQuestItemAdded = msg.str();
+                //MsgQuestItemAdded = msg.str();
                 TC_LOG_DEBUG("lasyan3.dropquestitems", "END CanDropQuestItem Item can be dropped for the quest --> TRUE");
                 return true;
             }
@@ -17083,7 +17083,7 @@ bool Player::CanDropQuestItem(uint32 itemid) // LASYAN: return true if at least 
     return false;
 }
 
-ObjectMgr::QuestMap Player::GetAvailableQuestsForItem(uint32 itemid)
+ObjectMgr::QuestMap Player::GetAvailableQuestsForItem(uint32 itemid) const
 {
     ItemTemplate const * it = sObjectMgr->GetItemTemplate(itemid);
     TC_LOG_DEBUG("lasyan3.dropquestitems", "START GetAvailableQuestsForItem for item %d [%s]", itemid, it->Name1.c_str());
@@ -25172,11 +25172,12 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
             loot->DeleteLootItemFromContainerItemDB(item->itemid);
 
         // LASYAN3 : AlwaysDropQuestItems
-        if (MsgQuestItemAdded.size() > 0 && IdQuestItemAdded == item->itemid)
+		if (CanDropQuestItem(item->itemid))
         {
-            GetSession()->SendNotification(MsgQuestItemAdded.c_str());
-            MsgQuestItemAdded.clear();
-            IdQuestItemAdded = 0;
+			std::ostringstream msg;
+			ItemTemplate const * it = sObjectMgr->GetItemTemplate(item->itemid);
+			msg << it->Name1 << " (" << (GetItemCount(item->itemid, false) + 1) /*<< "/" << itemCountNeeded*/ << ") ";
+			GetSession()->SendNotification(msg.str().c_str());
         }
     }
     else
